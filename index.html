@@ -56,9 +56,7 @@
         const demoGroups = {
             "DEMO123": {
                 members: [
-                    { id: "user1", name: "You", lat: null, lng: null, sharing: false },
-                    { id: "user2", name: "Alex", lat: 37.7749, lng: -122.4194, sharing: true },
-                    { id: "user3", name: "Jamie", lat: 37.3382, lng: -121.8863, sharing: true }
+                    { id: "user1", name: "You", lat: null, lng: null, sharing: false }
                 ]
             }
         };
@@ -179,7 +177,7 @@
                 maxLng += pad;
                 
                 // Create map image
-                const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=600x300&maptype=roadmap&path=color:0x0000FF80|weight:2|fillcolor:0x0000FF20${sharingMembers.map(m => `|${m.lat},${m.lng}`).join('')}&visible=${minLat},${minLng}|${maxLat},${maxLng}`;
+                const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=600x300&maptype=roadmap&path=color:0x0000FF80|weight:2|fillcolor:0x0000FF20${sharingMembers.map(m => `|${m.lat},${m.lng}`).join('')}&visible=${minLat},${minLng}|${maxLat},${maxLng}&key=YOUR_ACTUAL_API_KEY`;
                 
                 // Create map with markers
                 groupMap.innerHTML = `
