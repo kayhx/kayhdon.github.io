@@ -70,6 +70,7 @@
             
             let isSharing = false;
             let userPosition = null;
+            let updateInterval = null;
             
             // Toggle location sharing
             toggleSharing.addEventListener('click', function() {
@@ -97,12 +98,25 @@
                         renderMemberList();
                         isSharing = true;
                         
+                        // Clear any existing interval
+                        if (updateInterval) {
+                            clearInterval(updateInterval);
+                        }
+                        
                         // Simulate periodic updates
-                        setInterval(() => {
+                        updateInterval = setInterval(() => {
                             if (isSharing) {
-                                updateGroupData(true);
-                                renderGroupMap();
-                                renderMemberList();
+                                navigator.geolocation.getCurrentPosition(
+                                    newPosition => {
+                                        userPosition = newPosition;
+                                        updateGroupData(true);
+                                        renderGroupMap();
+                                        renderMemberList();
+                                    },
+                                    error => {
+                                        handleLocationError(error);
+                                    }
+                                );
                             }
                         }, 5000);
                     },
@@ -117,6 +131,10 @@
             function stopSharing() {
                 isSharing = false;
                 toggleSharing.textContent = "Yes";
+                if (updateInterval) {
+                    clearInterval(updateInterval);
+                    updateInterval = null;
+                }
                 updateGroupData(false);
                 renderGroupMap();
                 renderMemberList();
@@ -161,7 +179,7 @@
                 maxLng += pad;
                 
                 // Create map image
-                const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=600x300&maptype=roadmap&key=AIzaSyDummyKeyForDemoOnly&path=color:0x0000FF80|weight:2|fillcolor:0x0000FF20${sharingMembers.map(m => `|${m.lat},${m.lng}`).join('')}&visible=${minLat},${minLng}|${maxLat},${maxLng}`;
+                const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=600x300&maptype=roadmap&path=color:0x0000FF80|weight:2|fillcolor:0x0000FF20${sharingMembers.map(m => `|${m.lat},${m.lng}`).join('')}&visible=${minLat},${minLng}|${maxLat},${maxLng}`;
                 
                 // Create map with markers
                 groupMap.innerHTML = `
